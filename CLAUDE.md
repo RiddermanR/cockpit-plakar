@@ -12,6 +12,23 @@ cockpit-plakar is a Cockpit plugin for managing Plakar backups on a NAS. It shel
 - **Scope:** Single NAS support only
 - **License:** GPL-3.0
 
-## Current State
+## Build & Development
 
-The project is in early development (Stage 1). The initial goal is adding a "Plakar Backup" entry to the Cockpit main menu that displays a dashboard, with no other functionality yet.
+```bash
+npm install          # install dependencies
+npm run build        # production build to dist/
+npm run watch        # watch mode with sourcemaps
+make devel-install   # build + symlink dist/ into ~/.local/share/cockpit/
+make devel-uninstall # remove the symlink
+```
+
+The `cockpit` JS module is provided at runtime by the Cockpit frame — it is marked as external in esbuild and must not be bundled. Use `cockpit.spawn()` to shell out to CLI commands.
+
+## Architecture
+
+- `src/manifest.json` — registers "Plakar Backup" in Cockpit's Tools sidebar menu
+- `src/index.html` / `src/index.tsx` — entry point, mounts React to `#app`
+- `src/app.tsx` — main Application component (dashboard with store panels)
+- `src/cockpit.d.ts` — TypeScript declarations for the `cockpit` module
+- `build.js` — esbuild bundler config
+- `dist/` — build output, symlinked into Cockpit for development
