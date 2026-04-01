@@ -15,7 +15,6 @@ export const StoreCard = ({ storeName }: { storeName: string }) => {
 
     return (
         <Card>
-            <CardTitle><Title headingLevel="h2" size="xl">{storeName}</Title></CardTitle>
             <CardBody>
                 {loading ? (
                     <Spinner size="md" />

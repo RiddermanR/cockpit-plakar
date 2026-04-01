@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Page, PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 import { Dashboard } from "./components/dashboard";
+import { Restore } from "./components/restore";
 
 export const Application = () => {
     const [activeTab, setActiveTab] = useState(0);
@@ -19,15 +20,15 @@ export const Application = () => {
                         <PageSection>Backup</PageSection>
                     </Tab>
                     <Tab eventKey={2} title={<TabTitleText>Restore</TabTitleText>}>
-                        <PageSection>Restore</PageSection>
+                        <Restore />
                     </Tab>
-                    <Tab eventKey={2} title={<TabTitleText>Schedule</TabTitleText>}>
-                        <PageSection>Restore</PageSection>
+                    <Tab eventKey={3} title={<TabTitleText>Schedule</TabTitleText>}>
+                        <PageSection>Schedule</PageSection>
                     </Tab>
-                    <Tab eventKey={3} title={<TabTitleText>Stores</TabTitleText>}>
+                    <Tab eventKey={4} title={<TabTitleText>Stores</TabTitleText>}>
                         <PageSection>Stores</PageSection>
                     </Tab>
-                    <Tab eventKey={4} title={<TabTitleText>Sources</TabTitleText>}>
+                    <Tab eventKey={5} title={<TabTitleText>Sources</TabTitleText>}>
                         <PageSection>Sources</PageSection>
                     </Tab>
                 </Tabs>

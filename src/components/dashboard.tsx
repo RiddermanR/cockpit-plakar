@@ -37,11 +37,16 @@ export const Dashboard = () => {
                 ) : (
                     <Stack hasGutter>
                         {storeNames.map((name) => (
-                            <StackItem key={name}>
-                                <StoreCard key={name} storeName={name} />
-                            </StackItem>
+                            <>
+
+                                <Title headingLevel="h2" size="xl">{name}</Title>
+                                <StackItem key={name}>
+                                    <StoreCard key={name} storeName={name} />
+                                </StackItem>
+                            </>
                         ))}
                     </Stack>
+
                 )}
             </PageSection>
         </>
