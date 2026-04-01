@@ -1,0 +1,23 @@
+{
+    "name": "cockpit-plakar",
+    "version": "0.1.0",
+    "description": "Cockpit plugin for managing Plakar backups",
+    "license": "GPL-3.0",
+    "private": true,
+    "scripts": {
+        "build": "node build.js",
+        "watch": "node build.js --watch"
+    },
+    "dependencies": {
+        "@patternfly/react-core": "^6.0.0",
+        "react": "^18.3.0",
+        "react-dom": "^18.3.0"
+    },
+    "devDependencies": {
+        "@types/react": "^18.3.0",
+        "@types/react-dom": "^18.3.0",
+        "esbuild": "^0.27.3",
+        "esbuild-sass-plugin": "^3.3.0",
+        "typescript": "^5.6.0"
+    }
+}
