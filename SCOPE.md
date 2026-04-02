@@ -33,3 +33,14 @@ Get the storename from the top level of the yaml output. Remove the ':'
 plakar at @[storename] ls
 ```
 Run for each store. the @ shoud be places before the storenames from the get stores command
+
+## Features (Stage3)
+
+Restore backup. From restore tab and dashboard
+After clicking on the Restore button Open a modal dialog with te possibility to select a folder. Two buttons. Restore and Cancel. Restore spawns the restore command of plaker and shows the output on a card below the folder selection. After completion the buttons are replaced by a Close button
+
+*Restore:*
+```
+plakar at @[storename] restore -to [destination] [backupid]
+```
+

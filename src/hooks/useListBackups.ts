@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 export interface Backup {
     datetime: string;
     backupId: string;
+    size?: string;
+    timeConsumed?: string;
     source: string;
 }
 
@@ -27,7 +29,9 @@ function parseBackups(output: string): Backup[] {
         backups.push({
             datetime: `${dd}-${MM}-${yyyy} ${hh}:${mm}`,
             backupId: parts[1],
-            source: parts[parts.length - 1],
+            size: parts[2] + ' ' + parts[3],
+            timeConsumed: parts[4],
+            source: parts[5],
         });
     }
 

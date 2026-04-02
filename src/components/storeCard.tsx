@@ -1,17 +1,18 @@
+import { useState } from "react";
 import {
     Card,
-    CardTitle,
     CardBody,
     Spinner,
     Alert,
-    Title,
     Button,
 } from "@patternfly/react-core";
 import { Table, Thead, Tr, Th, Tbody, Td } from "@patternfly/react-table";
 import { useListBackups } from "../hooks/useListBackups";
+import { RestoreModal } from "./restoreModal";
 
 export const StoreCard = ({ storeName }: { storeName: string }) => {
     const { backups, loading, error } = useListBackups(storeName);
+    const [restoreBackupId, setRestoreBackupId] = useState<string | null>(null);
 
     return (
         <Card>
@@ -28,6 +29,8 @@ export const StoreCard = ({ storeName }: { storeName: string }) => {
                             <Tr>
                                 <Th>Date/Time</Th>
                                 <Th>Backup ID</Th>
+                                <Th>Size</Th>
+                                <Th>Time Consumed</Th>
                                 <Th>Source</Th>
                                 <Th />
                             </Tr>
@@ -37,9 +40,17 @@ export const StoreCard = ({ storeName }: { storeName: string }) => {
                                 <Tr key={i}>
                                     <Td>{backup.datetime}</Td>
                                     <Td>{backup.backupId}</Td>
+                                    <Td>{backup.size}</Td>
+                                    <Td>{backup.timeConsumed}</Td>
                                     <Td>{backup.source}</Td>
                                     <Td>
-                                        <Button variant="danger" size="sm">Restore</Button>
+                                        <Button
+                                            variant="danger"
+                                            size="sm"
+                                            onClick={() => setRestoreBackupId(backup.backupId)}
+                                        >
+                                            Restore
+                                        </Button>
                                     </Td>
                                 </Tr>
                             ))}
@@ -47,6 +58,14 @@ export const StoreCard = ({ storeName }: { storeName: string }) => {
                     </Table>
                 )}
             </CardBody>
+            {restoreBackupId && (
+                <RestoreModal
+                    isOpen={true}
+                    storeName={storeName}
+                    backupId={restoreBackupId}
+                    onClose={() => setRestoreBackupId(null)}
+                />
+            )}
         </Card>
     );
 };
