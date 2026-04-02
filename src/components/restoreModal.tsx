@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import {
     Modal,
     ModalVariant,
@@ -21,11 +21,20 @@ interface RestoreModalProps {
 }
 
 export const RestoreModal = ({ isOpen, storeName, backupId, onClose }: RestoreModalProps) => {
-    const [destination, setDestination] = useState("/tmp/restore");
+    const [destination, setDestination] = useState("");
+    const [homeDir, setHomeDir] = useState("");
     const [output, setOutput] = useState("");
     const [running, setRunning] = useState(false);
     const [finished, setFinished] = useState(false);
     const outputRef = useRef<HTMLPreElement>(null);
+
+    useEffect(() => {
+        cockpit.spawn(["sh", "-c", "echo $HOME"]).then((out) => {
+            const home = out.trim();
+            setHomeDir(home);
+            setDestination(home);
+        });
+    }, []);
 
     const scrollToBottom = () => {
         if (outputRef.current) {
@@ -62,7 +71,7 @@ export const RestoreModal = ({ isOpen, storeName, backupId, onClose }: RestoreMo
         setOutput("");
         setRunning(false);
         setFinished(false);
-        setDestination("/tmp/restore");
+        setDestination(homeDir);
         onClose();
     };
 

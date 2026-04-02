@@ -19,7 +19,7 @@ import { useState } from "react";
 export const Restore = () => {
     const { debugUser, userError } = useUser();
     const { storeNames, loading, storeError } = useStores();
-    const [expanded, setExpanded] = useState('toggle-roelof');
+    const [expanded, setExpanded] = useState('');
 
     if (userError) {
         return <Alert variant="danger" title="User error">{userError}</Alert>;
