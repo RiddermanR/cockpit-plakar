@@ -16,7 +16,7 @@ import { StoreCard } from "./storeCard";
 import { useState } from "react";
 
 
-export const Restore = () => {
+export const Snapshots = () => {
     const { debugUser, userError } = useUser();
     const { storeNames, loading, storeError } = useStores();
     const [expanded, setExpanded] = useState('');

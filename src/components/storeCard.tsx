@@ -9,10 +9,12 @@ import {
 import { Table, Thead, Tr, Th, Tbody, Td } from "@patternfly/react-table";
 import { useListBackups } from "../hooks/useListBackups";
 import { RestoreModal } from "./restoreModal";
+import { CheckModal } from "./checkModal";
 
 export const StoreCard = ({ storeName }: { storeName: string }) => {
     const { backups, loading, error } = useListBackups(storeName);
     const [restoreBackupId, setRestoreBackupId] = useState<string | null>(null);
+    const [checkBackupId, setCheckBackupId] = useState<string | null>(null);
 
     return (
         <Card>
@@ -45,6 +47,14 @@ export const StoreCard = ({ storeName }: { storeName: string }) => {
                                     <Td>{backup.source}</Td>
                                     <Td>
                                         <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            onClick={() => setCheckBackupId(backup.backupId)}
+                                        >
+                                            Check
+                                        </Button>
+                                        {" "}
+                                        <Button
                                             variant="danger"
                                             size="sm"
                                             onClick={() => setRestoreBackupId(backup.backupId)}
@@ -64,6 +74,14 @@ export const StoreCard = ({ storeName }: { storeName: string }) => {
                     storeName={storeName}
                     backupId={restoreBackupId}
                     onClose={() => setRestoreBackupId(null)}
+                />
+            )}
+            {checkBackupId && (
+                <CheckModal
+                    isOpen={true}
+                    storeName={storeName}
+                    backupId={checkBackupId}
+                    onClose={() => setCheckBackupId(null)}
                 />
             )}
         </Card>

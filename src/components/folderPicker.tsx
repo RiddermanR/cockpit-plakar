@@ -45,7 +45,13 @@ export const FolderPicker = ({ value, onChange, isDisabled }: FolderPickerProps)
     };
 
     useEffect(() => {
-        if (!isDisabled) {
+        if (value && browsePath !== value && !dirs.length && !loading) {
+            setBrowsePath(value);
+        }
+    }, [value]);
+
+    useEffect(() => {
+        if (!isDisabled && browsePath) {
             loadDirs(browsePath);
         }
     }, [browsePath, isDisabled]);
