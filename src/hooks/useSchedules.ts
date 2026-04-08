@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 export interface Schedule {
     name: string;
     description: string;
-    onCalendar: string;
+    onCalendar: string[];
     user: string;
     store: string;
     source: string;
@@ -28,8 +28,9 @@ for t in ${SYSTEMD_DIR}/plakar-*.timer; do
 done
 `;
 
-function getKey(block: string, section: string, key: string): string {
+function getKeys(block: string, section: string, key: string): string[] {
     const lines = block.split("\n");
+    const out: string[] = [];
     let inSection = false;
     for (const raw of lines) {
         const line = raw.trim();
@@ -40,9 +41,13 @@ function getKey(block: string, section: string, key: string): string {
         if (!inSection) continue;
         const idx = line.indexOf("=");
         if (idx < 0) continue;
-        if (line.slice(0, idx).trim() === key) return line.slice(idx + 1).trim();
+        if (line.slice(0, idx).trim() === key) out.push(line.slice(idx + 1).trim());
     }
-    return "";
+    return out;
+}
+
+function getKey(block: string, section: string, key: string): string {
+    return getKeys(block, section, key)[0] ?? "";
 }
 
 function parseExecStart(execStart: string): { store: string; source: string; ignoreFile?: string } {
@@ -66,7 +71,7 @@ export function parseSchedules(output: string): Schedule[] {
         const enabled = (enabledM?.[1].trim() ?? "").startsWith("enabled");
 
         const description = getKey(timerContent, "Unit", "Description") || getKey(serviceContent, "Unit", "Description");
-        const onCalendar = getKey(timerContent, "Timer", "OnCalendar");
+        const onCalendar = getKeys(timerContent, "Timer", "OnCalendar");
         const user = getKey(serviceContent, "Service", "User");
         const execStart = getKey(serviceContent, "Service", "ExecStart");
         const parsed = parseExecStart(execStart);
@@ -86,10 +91,11 @@ export function parseSchedules(output: string): Schedule[] {
 }
 
 export function buildTimer(s: Schedule): string {
+    const calendarLines = s.onCalendar.map((c) => `OnCalendar=${c}`).join("\n");
     return `[Unit]
 Description=${s.description}
 [Timer]
-OnCalendar=${s.onCalendar}
+${calendarLines}
 [Install]
 WantedBy=timers.target
 `;

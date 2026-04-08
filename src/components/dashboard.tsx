@@ -25,6 +25,7 @@ import { useStores } from "../hooks/useStores";
 import { useStoresConfig } from "../hooks/useStoresConfig";
 import { useAllStoresBackups, StoreBackups } from "../hooks/useAllStoresBackups";
 import { Backup } from "../hooks/useListBackups";
+import { useScheduleStatus } from "../hooks/useScheduleStatus";
 
 const SIZE_UNITS: Record<string, number> = {
     B: 1, KB: 1e3, MB: 1e6, GB: 1e9, TB: 1e12, PB: 1e15,
@@ -112,6 +113,7 @@ export const Dashboard = () => {
     const { storeNames, loading: storesLoading, storeError } = useStores();
     const { stores: storeConfigs } = useStoresConfig();
     const { data, loading: backupsLoading } = useAllStoresBackups(storeNames);
+    const { data: scheduleStatus } = useScheduleStatus();
 
     const aggregated: AggregatedStore[] = useMemo(() => {
         return data.map((sb: StoreBackups): AggregatedStore => {
@@ -242,6 +244,42 @@ export const Dashboard = () => {
                                     </Card>
                                 ))}
                             </Gallery>
+                        </StackItem>
+
+                        <StackItem>
+                            <Card isCompact>
+                                <CardTitle>Scheduled backups</CardTitle>
+                                <CardBody>
+                                    {scheduleStatus.length === 0 ? (
+                                        <EmptyState><EmptyStateBody>No schedules configured</EmptyStateBody></EmptyState>
+                                    ) : (
+                                        <Table variant="compact">
+                                            <Thead>
+                                                <Tr>
+                                                    <Th>Name</Th>
+                                                    <Th>Next</Th>
+                                                    <Th>Last</Th>
+                                                    <Th>State</Th>
+                                                </Tr>
+                                            </Thead>
+                                            <Tbody>
+                                                {scheduleStatus.map((s) => (
+                                                    <Tr key={s.name}>
+                                                        <Td>{s.name}</Td>
+                                                        <Td>{s.next || "—"}</Td>
+                                                        <Td>{s.last || "—"}</Td>
+                                                        <Td>
+                                                            <Label color={s.result === "success" ? "green" : s.result ? "red" : "grey"} isCompact>
+                                                                {s.result || "unknown"}
+                                                            </Label>
+                                                        </Td>
+                                                    </Tr>
+                                                ))}
+                                            </Tbody>
+                                        </Table>
+                                    )}
+                                </CardBody>
+                            </Card>
                         </StackItem>
 
                         <StackItem>

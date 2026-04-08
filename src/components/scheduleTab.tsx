@@ -20,7 +20,12 @@ import {
     FormSelectOption,
     EmptyState,
     EmptyStateBody,
+    Stack,
+    StackItem,
+    Flex,
+    FlexItem,
 } from "@patternfly/react-core";
+import { PlusCircleIcon, MinusCircleIcon } from "@patternfly/react-icons";
 import { Table, Thead, Tr, Th, Tbody, Td } from "@patternfly/react-table";
 import { Schedule, useSchedules } from "../hooks/useSchedules";
 import { BackupModal } from "./backupModal";
@@ -34,7 +39,7 @@ const ignorePathFor = (source: string) => `~/.config/cockpitplakar/${source}-ign
 const empty = (): Schedule => ({
     name: "",
     description: "",
-    onCalendar: "*-*-* 23:40:00",
+    onCalendar: ["*-*-* 23:40:00"],
     user: "",
     store: "",
     source: "",
@@ -68,14 +73,15 @@ export const ScheduleTab = () => {
         if (!editing) return;
         const d = editing.draft;
         if (!d.name.trim()) { setSaveError("Name is required"); return; }
-        if (!d.onCalendar.trim()) { setSaveError("OnCalendar is required"); return; }
+        const cleanCalendars = d.onCalendar.map((c) => c.trim()).filter((c) => c.length > 0);
+        if (cleanCalendars.length === 0) { setSaveError("At least one OnCalendar is required"); return; }
         if (!d.user.trim()) { setSaveError("User is required"); return; }
         if (!d.store.trim()) { setSaveError("Store is required"); return; }
         if (!d.source.trim()) { setSaveError("Source is required"); return; }
         const isDup = schedules.some((s) => s.name === d.name && s !== editing.original);
         if (isDup) { setSaveError(`A schedule named "${d.name}" already exists`); return; }
 
-        const draft: Schedule = { ...d, ignoreFile: d.ignoreFile?.trim() || undefined };
+        const draft: Schedule = { ...d, onCalendar: cleanCalendars, ignoreFile: d.ignoreFile?.trim() || undefined };
         setBusy(true);
         save(draft, editing.original?.name)
             .then(() => { setEditing(null); setBusy(false); })
@@ -128,12 +134,16 @@ export const ScheduleTab = () => {
                             <Tr key={s.name}>
                                 <Td>{s.name}</Td>
                                 <Td>{s.description}</Td>
-                                <Td>{s.onCalendar}</Td>
+                                <Td>{s.onCalendar.join("; ")}</Td>
                                 <Td>{s.user}</Td>
                                 <Td>{s.store}</Td>
                                 <Td>{s.source}</Td>
                                 <Td>{s.enabled ? "Enabled" : "Disabled"}</Td>
                                 <Td>
+                                    <Button variant="secondary" size="sm" onClick={() => openEdit(s)}>Modify</Button>
+                                    {" "}
+                                    <Button variant="danger" size="sm" onClick={() => setDeleting(s)}>Delete</Button>
+                                    {" "}
                                     <Button
                                         variant="secondary"
                                         size="sm"
@@ -148,11 +158,7 @@ export const ScheduleTab = () => {
                                         {s.enabled ? "Disable" : "Enable"}
                                     </Button>
                                     {" "}
-                                    <Button variant="secondary" size="sm" onClick={() => setRunning(s.name)}>Start now</Button>
-                                    {" "}
-                                    <Button variant="secondary" size="sm" onClick={() => openEdit(s)}>Modify</Button>
-                                    {" "}
-                                    <Button variant="danger" size="sm" onClick={() => setDeleting(s)}>Delete</Button>
+                                    <Button variant="secondary" size="sm" onClick={() => setRunning(s.name)}>Backup now</Button>
                                 </Td>
                             </Tr>
                         ))}
@@ -181,10 +187,49 @@ export const ScheduleTab = () => {
                                 />
                             </FormGroup>
                             <FormGroup label="OnCalendar" isRequired fieldId="sched-cal">
-                                <CalendarInput
-                                    value={editing.draft.onCalendar}
-                                    onChange={(v) => setEditing({ ...editing, draft: { ...editing.draft, onCalendar: v } })}
-                                />
+                                <Stack hasGutter>
+                                    {editing.draft.onCalendar.map((cal, i) => (
+                                        <StackItem key={i}>
+                                            <Flex alignItems={{ default: "alignItemsFlexStart" }}>
+                                                <FlexItem grow={{ default: "grow" }}>
+                                                    <CalendarInput
+                                                        value={cal}
+                                                        onChange={(v) => {
+                                                            const next = [...editing.draft.onCalendar];
+                                                            next[i] = v;
+                                                            setEditing({ ...editing, draft: { ...editing.draft, onCalendar: next } });
+                                                        }}
+                                                    />
+                                                </FlexItem>
+                                                <FlexItem>
+                                                    <Button
+                                                        variant="plain"
+                                                        aria-label="Remove"
+                                                        isDisabled={editing.draft.onCalendar.length <= 1}
+                                                        onClick={() => {
+                                                            const next = editing.draft.onCalendar.filter((_, j) => j !== i);
+                                                            setEditing({ ...editing, draft: { ...editing.draft, onCalendar: next } });
+                                                        }}
+                                                    >
+                                                        <MinusCircleIcon />
+                                                    </Button>
+                                                </FlexItem>
+                                            </Flex>
+                                        </StackItem>
+                                    ))}
+                                    <StackItem>
+                                        <Button
+                                            variant="link"
+                                            icon={<PlusCircleIcon />}
+                                            onClick={() => setEditing({
+                                                ...editing,
+                                                draft: { ...editing.draft, onCalendar: [...editing.draft.onCalendar, ""] },
+                                            })}
+                                        >
+                                            Add OnCalendar
+                                        </Button>
+                                    </StackItem>
+                                </Stack>
                             </FormGroup>
                             <FormGroup label="User" isRequired fieldId="sched-user">
                                 <TextInput
