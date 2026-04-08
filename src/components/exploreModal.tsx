@@ -85,7 +85,6 @@ export const ExploreModal = ({ isOpen, storeName, backupId, onClose }: ExploreMo
                 { err: "out" }
             )
             .then((output: string) => {
-                console.log("Raw ls output:", output);
                 const parsed: Entry[] = [];
                 for (const line of output.split("\n")) {
                     const e = parseLine(line);
