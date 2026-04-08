@@ -34,3 +34,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#packaging
+packaging/arch/cockpit-plakar-*.tar.gz
+packaging/arch/pkg/*
+packaging/arch/src/*
+packaging/arch/cockpit-plakar-*.tar.zst
