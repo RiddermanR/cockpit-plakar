@@ -116,17 +116,18 @@ export const SourcesTab = () => {
 
     return (
         <PageSection>
-            <Title headingLevel="h1" size="2xl">Sources</Title>
-
-            {error && <Alert variant="danger" title="Failed to load sources" isInline>{error}</Alert>}
-
             <Toolbar>
                 <ToolbarContent>
                     <ToolbarItem>
+                        <Title headingLevel="h1" size="2xl">Sources</Title>
+                    </ToolbarItem>
+                    <ToolbarItem align={{ default: "alignEnd" }}>
                         <Button variant="primary" onClick={openAdd}>Add source</Button>
                     </ToolbarItem>
                 </ToolbarContent>
             </Toolbar>
+
+            {error && <Alert variant="danger" title="Failed to load sources" isInline>{error}</Alert>}
 
             {loading ? (
                 <Spinner />

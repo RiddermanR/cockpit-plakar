@@ -8,7 +8,7 @@ export interface Backup {
     source: string;
 }
 
-function parseBackups(output: string): Backup[] {
+export function parseBackups(output: string): Backup[] {
     const lines = output.trim().split("\n").filter((l) => l.length > 0);
     const entries: { date: Date; backup: Backup }[] = [];
 
@@ -42,12 +42,14 @@ function parseBackups(output: string): Backup[] {
     return entries.slice(0, 15).map((e) => e.backup);
 }
 
-export const useListBackups = (storeName: string) => {
+export const useListBackups = (storeName: string, refreshKey: number = 0) => {
     const [backups, setBackups] = useState<Backup[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
+        setLoading(true);
+        setError(null);
         cockpit
             .spawn(["plakar", "at", `@${storeName}`, "ls"])
             .then((output) => {
@@ -58,7 +60,7 @@ export const useListBackups = (storeName: string) => {
                 setError(String(err));
                 setLoading(false);
             });
-    }, [storeName]);
+    }, [storeName, refreshKey]);
 
     return { backups, loading, error };
 };

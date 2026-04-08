@@ -12,8 +12,8 @@ import { RestoreModal } from "./restoreModal";
 import { CheckModal } from "./checkModal";
 import { ExploreModal } from "./exploreModal";
 
-export const StoreCard = ({ storeName }: { storeName: string }) => {
-    const { backups, loading, error } = useListBackups(storeName);
+export const StoreCard = ({ storeName, refreshKey = 0 }: { storeName: string; refreshKey?: number }) => {
+    const { backups, loading, error } = useListBackups(storeName, refreshKey);
     const [restoreBackupId, setRestoreBackupId] = useState<string | null>(null);
     const [checkBackupId, setCheckBackupId] = useState<string | null>(null);
     const [exploreBackupId, setExploreBackupId] = useState<string | null>(null);

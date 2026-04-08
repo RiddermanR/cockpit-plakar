@@ -168,13 +168,12 @@ export const StoresTab = () => {
 
     return (
         <PageSection>
-            <Title headingLevel="h1" size="2xl">Stores</Title>
-
-            {error && <Alert variant="danger" title="Failed to load stores" isInline>{error}</Alert>}
-
             <Toolbar>
                 <ToolbarContent>
                     <ToolbarItem>
+                        <Title headingLevel="h1" size="2xl">Stores</Title>
+                    </ToolbarItem>
+                    <ToolbarItem align={{ default: "alignEnd" }}>
                         <FormSelect
                             value={selectedType}
                             onChange={(_e, v) => setSelectedType(v as StoreType)}
@@ -189,6 +188,8 @@ export const StoresTab = () => {
                     </ToolbarItem>
                 </ToolbarContent>
             </Toolbar>
+
+            {error && <Alert variant="danger" title="Failed to load stores" isInline>{error}</Alert>}
 
             {loading ? (
                 <Spinner />
