@@ -1,0 +1,8 @@
+mystorage:
+  location: s3://mybucket
+  access_key: myaccesskey
+  secret_access_key: mysecretkey
+  passphrase: mypassphrase
+  
+localbackup:
+  location: /var/backups

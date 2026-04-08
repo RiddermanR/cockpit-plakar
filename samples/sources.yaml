@@ -1,0 +1,4 @@
+libredb:
+    location: /data/postgresql/pgdata
+documents:
+    location: /home/roelof/Documents

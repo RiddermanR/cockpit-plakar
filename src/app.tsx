@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import { Page, PageSection, Tabs, Tab, TabTitleText } from "@patternfly/react-core";
 import { Dashboard } from "./components/dashboard";
 import { Snapshots } from "./components/snapshots";
+import { StoresTab } from "./components/storesTab";
+import { SourcesTab } from "./components/sourcesTab";
 
 export const Application = () => {
     const [activeTab, setActiveTab] = useState(0);
@@ -23,10 +25,10 @@ export const Application = () => {
                         <PageSection>Schedule</PageSection>
                     </Tab>
                     <Tab eventKey={3} title={<TabTitleText>Stores</TabTitleText>}>
-                        <PageSection>Stores</PageSection>
+                        <StoresTab />
                     </Tab>
                     <Tab eventKey={4} title={<TabTitleText>Sources</TabTitleText>}>
-                        <PageSection>Sources</PageSection>
+                        <SourcesTab />
                     </Tab>
                 </Tabs>
             </PageSection>
