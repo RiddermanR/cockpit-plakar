@@ -10,11 +10,13 @@ import { Table, Thead, Tr, Th, Tbody, Td } from "@patternfly/react-table";
 import { useListBackups } from "../hooks/useListBackups";
 import { RestoreModal } from "./restoreModal";
 import { CheckModal } from "./checkModal";
+import { ExploreModal } from "./exploreModal";
 
 export const StoreCard = ({ storeName }: { storeName: string }) => {
     const { backups, loading, error } = useListBackups(storeName);
     const [restoreBackupId, setRestoreBackupId] = useState<string | null>(null);
     const [checkBackupId, setCheckBackupId] = useState<string | null>(null);
+    const [exploreBackupId, setExploreBackupId] = useState<string | null>(null);
 
     return (
         <Card>
@@ -55,6 +57,14 @@ export const StoreCard = ({ storeName }: { storeName: string }) => {
                                         </Button>
                                         {" "}
                                         <Button
+                                            variant="secondary"
+                                            size="sm"
+                                            onClick={() => setExploreBackupId(backup.backupId)}
+                                        >
+                                            Explore
+                                        </Button>
+                                        {" "}
+                                        <Button
                                             variant="danger"
                                             size="sm"
                                             onClick={() => setRestoreBackupId(backup.backupId)}
@@ -82,6 +92,14 @@ export const StoreCard = ({ storeName }: { storeName: string }) => {
                     storeName={storeName}
                     backupId={checkBackupId}
                     onClose={() => setCheckBackupId(null)}
+                />
+            )}
+            {exploreBackupId && (
+                <ExploreModal
+                    isOpen={true}
+                    storeName={storeName}
+                    backupId={exploreBackupId}
+                    onClose={() => setExploreBackupId(null)}
                 />
             )}
         </Card>

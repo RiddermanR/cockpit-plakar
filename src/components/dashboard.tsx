@@ -8,7 +8,6 @@ import {
 } from "@patternfly/react-core";
 import { useUser } from "../hooks/useUser";
 import { useStores } from "../hooks/useStores";
-import { StoreCard } from "./storeCard";
 
 
 export const Dashboard = () => {
@@ -41,7 +40,6 @@ export const Dashboard = () => {
 
                                 <Title headingLevel="h2" size="xl">{name}</Title>
                                 <StackItem key={name}>
-                                    <StoreCard key={name} storeName={name} />
                                 </StackItem>
                             </>
                         ))}
