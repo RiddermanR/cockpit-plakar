@@ -1,0 +1,5 @@
+[Unit]
+Description=Backup hiking
+[Service]
+User=roelof
+ExecStart=/usr/bin/plakar at @roelof backup -ignore-file /data/plakar/exclude.txt @hiking

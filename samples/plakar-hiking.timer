@@ -1,0 +1,6 @@
+[Unit]
+Description=Backup hiking
+[Timer]
+OnCalendar=*-*-* 23:40:00
+[Install]
+WantedBy=timers.target

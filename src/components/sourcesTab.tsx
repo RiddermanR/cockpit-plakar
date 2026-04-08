@@ -23,6 +23,24 @@ import { Table, Thead, Tr, Th, Tbody, Td } from "@patternfly/react-table";
 import { FolderPicker } from "./folderPicker";
 import { SourceConfig, useSourcesConfig } from "../hooks/useSourcesConfig";
 
+const ignoreFilePath = (name: string) => `~/.config/cockpitplakar/${name}-ignore.txt`;
+
+const writeIgnoreFile = (name: string, patterns: string[]) => {
+    const path = ignoreFilePath(name);
+    if (patterns.length === 0) {
+        return cockpit.spawn(
+            ["sh", "-c", `rm -f ${path}`],
+            { err: "message" },
+        );
+    }
+    return cockpit
+        .spawn(
+            ["sh", "-c", `mkdir -p "$(dirname ${path})" && cat > ${path}`],
+            { err: "message" },
+        )
+        .input(patterns.join("\n") + "\n");
+};
+
 export const SourcesTab = () => {
     const { sources, loading, error, save } = useSourcesConfig();
     const [editing, setEditing] = useState<{ original: SourceConfig | null; draft: SourceConfig } | null>(null);
@@ -79,6 +97,7 @@ export const SourcesTab = () => {
                         ["plakar", "source", "add", draft.name, draft.location],
                         { err: "message" },
                     );
+                    await writeIgnoreFile(draft.name, draft.excludes ?? []);
                     if (draftExcludes.length > 0) {
                         await cockpit.spawn(
                             ["plakar", "source", "set", draft.name, `excludes=${draftExcludes}`],
@@ -94,6 +113,7 @@ export const SourcesTab = () => {
                     );
                 }
                 if (excludesChanged && original) {
+                    await writeIgnoreFile(original.name, draft.excludes ?? []);
                     await cockpit.spawn(
                         ["plakar", "source", "set", original.name, `excludes=${draftExcludes}`],
                         { err: "message" },
@@ -110,6 +130,7 @@ export const SourcesTab = () => {
         const next = sources.filter((s) => s !== deleting);
         save(next)
             .then(() => cockpit.spawn(["plakar", "source", "rm", name], { err: "message" }))
+            .then(() => writeIgnoreFile(name, []))
             .then(() => setDeleting(null))
             .catch((err) => setSaveError(String(err)));
     };

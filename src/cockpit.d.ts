@@ -8,6 +8,7 @@ interface CockpitSpawnResult extends Promise<string> {
     stream(callback: (data: string) => void): CockpitSpawnResult;
     fail(callback: (error: Error) => void): CockpitSpawnResult;
     input(data: string, stream?: boolean): CockpitSpawnResult;
+    close(problem?: string): void;
 }
 
 declare const cockpit: {

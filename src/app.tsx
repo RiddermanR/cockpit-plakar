@@ -4,6 +4,7 @@ import { Dashboard } from "./components/dashboard";
 import { Snapshots } from "./components/snapshots";
 import { StoresTab } from "./components/storesTab";
 import { SourcesTab } from "./components/sourcesTab";
+import { ScheduleTab } from "./components/scheduleTab";
 
 export const Application = () => {
     const [activeTab, setActiveTab] = useState(0);
@@ -22,7 +23,7 @@ export const Application = () => {
                         <Snapshots />
                     </Tab>
                     <Tab eventKey={2} title={<TabTitleText>Schedule</TabTitleText>}>
-                        <PageSection>Schedule</PageSection>
+                        <ScheduleTab />
                     </Tab>
                     <Tab eventKey={3} title={<TabTitleText>Stores</TabTitleText>}>
                         <StoresTab />
